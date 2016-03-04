@@ -1,6 +1,6 @@
-package com.apptricity.projections;
+package com.apptricity.entity;
 
-import com.apptricity.entity.ExpenseReport;
+import com.apptricity.enums.ExpenseReportStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
@@ -17,12 +17,22 @@ public interface ExpenseReportProjection {
   @Value("#{target.merchant.name}")
   String getMerchantName();
 
+  @Value("#{target.merchant.id}")
+  String getMerchantId();
+
   @Value("#{target.amount}")
   BigDecimal getAmount();
+
+  @Value("#{target.expenseDateTime}")
+  Date getExpenseDateTime();
+
+  @Value("#{target.status}")
+  ExpenseReportStatus getSTatus();
+
+  @Value("#{target.comments}")
+  List<String> getComments();
 
   @Value("#{target.createdDate}")
   Date getCreatedDate();
 
-  @Value("#{target.comments}")
-  List<String> getComments();
 }

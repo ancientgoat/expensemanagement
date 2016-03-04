@@ -48,7 +48,13 @@ public class ExpenseReportResponseDto {
 
     private Merchant merchant;
     private ExpenseReport expenseReport;
+    private ErrorMessage.Builder errorMessageBuilder = new ErrorMessage.Builder();
     private ErrorMessage errorMessage;
+
+    public Builder addErrorMessage(final String inErrorMessage) {
+      this.errorMessageBuilder.addError(inErrorMessage);
+      return this;
+    }
 
     public Builder setErrorMessage(final ErrorMessage inErrorMessage) {
       this.errorMessage = inErrorMessage;
@@ -66,6 +72,7 @@ public class ExpenseReportResponseDto {
     }
 
     public ExpenseReportResponseDto build() {
+      this.errorMessage = errorMessageBuilder.build();
       return new ExpenseReportResponseDto(this);
     }
   }

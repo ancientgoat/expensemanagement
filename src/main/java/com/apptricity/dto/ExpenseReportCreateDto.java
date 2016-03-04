@@ -2,13 +2,11 @@ package com.apptricity.dto;
 
 import com.apptricity.entity.ExpenseReport;
 import com.apptricity.entity.Merchant;
+import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.util.ErrorMessage;
-import com.google.common.collect.Lists;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -60,7 +58,14 @@ public class ExpenseReportCreateDto {
     private BigDecimal amount;
     private Date expenseDateTime;
     private String comment;
+    private ExpenseReportStatus status = ExpenseReportStatus.NEW;
     private ErrorMessage errorMessage;
+    private ErrorMessage.Builder errorMessageBuilder = new ErrorMessage.Builder();
+
+    public void setStatus(ExpenseReportStatus status) {
+
+      this.status = status;
+    }
 
     public Builder setAmount(BigDecimal amount) {
       this.amount = amount;
@@ -77,27 +82,33 @@ public class ExpenseReportCreateDto {
       return this;
     }
 
-    private void validateInput() {
-
-      final ErrorMessage.Builder builder = new ErrorMessage.Builder();
-
+    private void validateForInsert() {
       if (null == this.amount) {
-        builder.addError("'amount' is required, please add and try again.");
+        errorMessageBuilder.addError("'amount' is required, please add and try again.");
       }
-
       if (null == this.merchantName) {
-        builder.addError("'merchantName' is required, please add and try again.");
+        errorMessageBuilder.addError("'merchantName' is required, please add and try again.");
       }
-
       if (null == this.expenseDateTime) {
-        builder.addError("'expenseDateTime' is required, please add and try again.");
+        errorMessageBuilder.addError("'expenseDateTime' is required, please add and try again.");
       }
-
-      this.errorMessage = builder.build();
     }
 
-    public ExpenseReportCreateDto build() {
-      validateInput();
+    private void validateForUpdate() {
+    }
+
+    public ExpenseReportCreateDto buildForUpdate() {
+      validateForUpdate();
+      return _build();
+    }
+
+    public ExpenseReportCreateDto buildForInsert() {
+      validateForInsert();
+      return _build();
+    }
+
+    private ExpenseReportCreateDto _build() {
+      this.errorMessage = errorMessageBuilder.build();
       return new ExpenseReportCreateDto(this);
     }
   }

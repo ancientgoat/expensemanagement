@@ -6,11 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 import org.springframework.data.annotation.Id;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,20 +18,17 @@ import java.util.List;
 public class ExpenseReport {
 
   @Id
-  String Id;
-
+  private String id;
   private BigDecimal amount;
   private Date expenseDateTime;
   private List<String> comments = Lists.newArrayList();
   private ExpenseReportStatus status = ExpenseReportStatus.NEW;
-
+  private Merchant merchant;
   private Date createdDate = new Date();
 
-  @ManyToOne(cascade = CascadeType.MERGE)
-  private Merchant merchant;
 
   public String getId() {
-    return Id;
+    return id;
   }
 
   @JsonSerialize(using = CustomDateSerializer.class)
