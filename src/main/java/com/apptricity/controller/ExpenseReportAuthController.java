@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
  *
  */
 @RestController
-@RequestMapping(value = "/")
-public class ExpenseReportController {
+@RequestMapping(value = "/auth")
+public class ExpenseReportAuthController {
 
   @Autowired
   private ExpenseReportService expenseReportService;
@@ -29,6 +29,7 @@ public class ExpenseReportController {
   /**
    *
    */
+  @PreAuthorize("isUser('demo')")
   @RequestMapping(value = "/expenses", method = RequestMethod.GET)
   //public ResponseEntity findAllPageable(final Pageable pageable) {
   public ResponseEntity findAllPageable(

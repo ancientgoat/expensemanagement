@@ -50,6 +50,8 @@ dependencies {
     compile group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb", version: "1.3.2.RELEASE"
     compile group: 'javax.persistence', name: 'com.springsource.javax.persistence', version: '2.0.0'
 
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '1.3.3.RELEASE'
+
     compile group: 'com.mysema.querydsl', name: 'querydsl-mongodb', version: '3.7.2'
     compile group: 'com.mysema.querydsl', name: 'querydsl-core', version: '3.7.2'
     compile group: 'com.mysema.querydsl', name: 'querydsl-apt', version: '3.7.2'

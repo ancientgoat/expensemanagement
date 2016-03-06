@@ -1,7 +1,13 @@
 
+Caveat
+--------------
+I have never used Mongodb before, so the entities I created have hardcoded attributes/properties.
+Seems to work just fine.
+
 
 
 Features 
+--------------
 * Each repository has 'exported = false'
   * This allows a Controller to still use the MongoRepository bulit in features.
   * However, it doesn't expose the build in REST calls to the outside world.
