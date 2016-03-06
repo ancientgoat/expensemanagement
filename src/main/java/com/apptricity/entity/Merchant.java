@@ -1,5 +1,6 @@
 package com.apptricity.entity;
 
+import com.apptricity.util.UpdateHelper;
 import com.google.common.collect.Lists;
 import org.springframework.data.annotation.Id;
 
@@ -7,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,5 +36,11 @@ public class Merchant {
   public Merchant setName(final String inName) {
     this.name = inName;
     return this;
+  }
+
+  public boolean updateName(final String inName) {
+    final UpdateHelper<String> updateHelper = UpdateHelper.newInstance(this.name, inName);
+    this.name = updateHelper.getValue();
+    return updateHelper.isChanged();
   }
 }

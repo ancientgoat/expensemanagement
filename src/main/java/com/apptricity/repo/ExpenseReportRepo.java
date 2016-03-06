@@ -12,12 +12,4 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 // Notice : exported = false
 @RepositoryRestResource(collectionResourceRel = "expensereports", path = "expensereport", exported = false)
 public interface ExpenseReportRepo extends MongoRepository<ExpenseReport, String> {
-
-  @Query(""
-      + "SELECT  E \n"
-      + "FROM    ExpenseReport E \n"
-      + "        LEFT JOIN FETCH E.merchant M \n"
-      + "\n"
-  )
-  ExpenseReport fetchOne(@Param("id") String id);
 }

@@ -2,6 +2,7 @@ package com.apptricity.entity;
 
 import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.util.CustomDateSerializer;
+import com.apptricity.util.UpdateHelper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Lists;
 import org.springframework.data.annotation.Id;
@@ -36,31 +37,35 @@ public class ExpenseReport {
     return expenseDateTime;
   }
 
-  public ExpenseReport setExpenseDateTime(Date expenseDateTime) {
-    this.expenseDateTime = expenseDateTime;
-    return this;
-  }
-
   public BigDecimal getAmount() {
     return amount;
-  }
-
-  public ExpenseReport setAmount(final BigDecimal amount) {
-    this.amount = amount;
-    return this;
   }
 
   public Date getCreatedDate() {
     return createdDate;
   }
 
-  public ExpenseReport setCreatedDate(final Date createdDate) {
-    this.createdDate = createdDate;
+  public List<String> getComments() {
+    return Lists.newArrayList(comments);
+  }
+
+  public ExpenseReportStatus getStatus() {
+    return status;
+  }
+
+  public Merchant getMerchant() {
+    return merchant;
+  }
+
+  // --------------------------------------
+  public ExpenseReport setExpenseDateTime(Date expenseDateTime) {
+    this.expenseDateTime = expenseDateTime;
     return this;
   }
 
-  public List<String> getComments() {
-    return Lists.newArrayList(comments);
+  public ExpenseReport setAmount(final BigDecimal amount) {
+    this.amount = amount;
+    return this;
   }
 
   public ExpenseReport setComments(List<String> comments) {
@@ -73,20 +78,30 @@ public class ExpenseReport {
     return this;
   }
 
-  public ExpenseReportStatus getStatus() {
-    return status;
-  }
-
   public ExpenseReport setStatus(final ExpenseReportStatus status) {
     this.status = status;
     return this;
   }
 
-  public Merchant getMerchant() {
-    return merchant;
-  }
-
   public void setMerchant(Merchant merchant) {
     this.merchant = merchant;
+  }
+
+  public boolean updateExpenseDateTime(final Date inExpenseDateTime) {
+    final UpdateHelper<Date> updateHelper = UpdateHelper.newInstance(this.expenseDateTime, inExpenseDateTime);
+    this.expenseDateTime = updateHelper.getValue();
+    return updateHelper.isChanged();
+  }
+
+  public boolean updateAmount(final BigDecimal inAmount) {
+    final UpdateHelper<BigDecimal> updateHelper = UpdateHelper.newInstance(this.amount, inAmount);
+    this.amount = updateHelper.getValue();
+    return updateHelper.isChanged();
+  }
+
+  public boolean updateStatus(final ExpenseReportStatus inStatus) {
+    final UpdateHelper<ExpenseReportStatus> updateHelper = UpdateHelper.newInstance(this.status, inStatus);
+    this.status = updateHelper.getValue();
+    return updateHelper.isChanged();
   }
 }

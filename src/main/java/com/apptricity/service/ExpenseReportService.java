@@ -8,6 +8,7 @@ import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.repo.ExpenseReportRepo;
 import com.apptricity.repo.MerchantRepo;
 import com.apptricity.util.Messages;
+import com.apptricity.util.UpdateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,41 +71,42 @@ public class ExpenseReportService {
   }
 
   /**
-   * @param inId
-   * @param build
-   * @return
+   *
    */
   public ExpenseReportResponseDto updateFromDto(final String inId, final ExpenseReportCreateDto createDto) {
 
     final ExpenseReportResponseDto.Builder responseDtoBuilder = new ExpenseReportResponseDto.Builder();
     final ExpenseReport expenseReport = this.expenseReportRepo.findOne(inId);
-    ExpenseReport savedExpenseReport = null;
 
-    if (null != expenseReport) {
+    if (null == expenseReport) {
+      responseDtoBuilder.addError(String.format("No such ExpenseReport with id '%s'", inId));
+    } else {
       if (ExpenseReportStatus.NEW == expenseReport.getStatus()) {
-
+        // ExpenseReport is NOT NEW - update not allowed.
+        responseDtoBuilder.addWarn("Can not update a REDEEMED ExpenseReport.");
+      } else {
         final ExpenseReport dtoExpenseRpt = createDto.getExpenseReport();
 
-        expenseReport.setAmount(UpdateHelper.update(
-            expenseReport.getAmount(), dtoExpenseRpt.getAmount()));
-
-        expenseReport.setExpenseDateTime(UpdateHelper.update(
-            expenseReport.getExpenseDateTime(), dtoExpenseRpt.getExpenseDateTime()));
+        boolean changed =
+            expenseReport.updateAmount(dtoExpenseRpt.getAmount())
+                || expenseReport.updateExpenseDateTime(dtoExpenseRpt.getExpenseDateTime());
 
         final ExpenseReportStatus status = dtoExpenseRpt.getStatus();
         if (null != status && status == ExpenseReportStatus.REIMBURSED) {
-          expenseReport.setStatus(status);
+          changed = expenseReport.updateStatus(dtoExpenseRpt.getStatus()) || changed;
         }
-        savedExpenseReport = this.expenseReportRepo.save(expenseReport);
 
+        // Save some time - if nothing changed.
+        ExpenseReport savedExpenseReport = null;
+        if (changed) {
+          savedExpenseReport = this.expenseReportRepo.save(expenseReport);
+        } else {
+          responseDtoBuilder.addInfo(
+              String.format("No changes for ExpenseReport id '%s', nothing saved.", inId));
+          savedExpenseReport = expenseReport;
+        }
         responseDtoBuilder.setExpenseReport(savedExpenseReport);
-        responseDtoBuilder.setMerchant(savedExpenseReport.getMerchant());
-      } else {
-        // ExpenseReport is NOT NEW - can not update.
-        responseDtoBuilder.addErrorMessage("Can not update an ExpenseReport that is REDEEMED.");
       }
-    } else {
-      responseDtoBuilder.addErrorMessage(String.format("No such ExpenseReport with id '%s'", inId));
     }
 
     return responseDtoBuilder.build();

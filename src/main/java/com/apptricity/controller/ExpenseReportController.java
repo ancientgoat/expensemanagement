@@ -5,6 +5,8 @@ import com.apptricity.dto.ExpenseReportResponseDto;
 import com.apptricity.entity.ExpenseReport;
 import com.apptricity.service.ExpenseReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +23,17 @@ public class ExpenseReportController {
 
 
   /**
-   * @param name
-   * @return
+   *
+   */
+  @RequestMapping(value = "/expenses", method = RequestMethod.GET)
+  public ResponseEntity findAllPageable(final Pageable pageable) {
+    HttpStatus httpStatus = HttpStatus.OK;
+    Page<ExpenseReport> expenseReportPages = expenseReportService.findAll(pageable);
+    return new ResponseEntity(expenseReportPages, httpStatus);
+  }
+
+  /**
+   *
    */
   @RequestMapping(value = "/expense/{id}", method = RequestMethod.GET)
   public ResponseEntity findOne(@PathVariable("id") String id) {
@@ -32,8 +43,7 @@ public class ExpenseReportController {
   }
 
   /**
-   * @param name
-   * @return
+   *
    */
   @RequestMapping(value = "/expense", method = RequestMethod.POST, consumes = "application/json")
   public ResponseEntity createExpenseReport(@RequestBody ExpenseReportCreateDto.Builder dtoBuilder) {
@@ -50,8 +60,7 @@ public class ExpenseReportController {
   }
 
   /**
-   * @param name
-   * @return
+   *
    */
   @RequestMapping(value = "/expense/{id}", method = RequestMethod.PUT, consumes = "application/json")
   public ResponseEntity updateExpenseReport(
