@@ -1,9 +1,7 @@
 
 ## Caveat
-I have never used Mongodb before, so the entities I created have hardcoded attributes/properties.
-Seems to work just fine.
-
-
+I have never used Mongodb before, so the entities I created have hardcoded 
+attributes/properties.  They seem to work just fine.
 
 ## Extra Credit 
 
