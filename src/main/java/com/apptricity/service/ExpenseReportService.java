@@ -7,8 +7,7 @@ import com.apptricity.entity.Merchant;
 import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.repo.ExpenseReportRepo;
 import com.apptricity.repo.MerchantRepo;
-import com.apptricity.util.ErrorMessage;
-import com.apptricity.util.UpdateHelper;
+import com.apptricity.util.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +51,7 @@ public class ExpenseReportService {
     final ExpenseReportResponseDto.Builder responseDtoBuilder = new ExpenseReportResponseDto.Builder();
 
     try {
-      if (!createDto.hasErrors()) {
+      if (!createDto.hasMessage()) {
         final Merchant merchant = merchantRepo.save(createDto.getMerchant());
         ExpenseReport expenseReport = createDto.getExpenseReport();
         expenseReport.setMerchant(merchant);
@@ -62,10 +61,10 @@ public class ExpenseReportService {
         ;
       } else {
         // has errors
-        responseDtoBuilder.setErrorMessage(createDto.getErrorMessage());
+        responseDtoBuilder.addMessages(createDto.getMessages());
       }
     } catch (Exception e) {
-      responseDtoBuilder.setErrorMessage(new ErrorMessage.Builder().addError(e.getMessage()).build());
+      responseDtoBuilder.addError(e.getMessage());
     }
     return responseDtoBuilder.build();
   }

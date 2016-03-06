@@ -42,9 +42,9 @@ public class ExpenseReportController {
 
     ExpenseReportResponseDto responseDto = expenseReportService.createFromDto(dtoBuilder.buildForInsert());
 
-    if (responseDto.hasErrors()) {
+    if (responseDto.hasMessage()) {
       httpStatus = HttpStatus.NOT_ACCEPTABLE;
-      return new ResponseEntity(responseDto.getErrorMessage(), httpStatus);
+      return new ResponseEntity(responseDto.getMessages(), httpStatus);
     }
     return new ResponseEntity(responseDto.getExpenseReport(), httpStatus);
   }
@@ -62,9 +62,9 @@ public class ExpenseReportController {
     ExpenseReportResponseDto responseDto =
         expenseReportService.updateFromDto(inId, dtoBuilder.buildForInsert());
 
-    if (responseDto.hasErrors()) {
+    if (responseDto.hasMessage()) {
       httpStatus = HttpStatus.NOT_ACCEPTABLE;
-      return new ResponseEntity(responseDto.getErrorMessage(), httpStatus);
+      return new ResponseEntity(responseDto.getMessages(), httpStatus);
     }
     return new ResponseEntity(responseDto.getExpenseReport(), httpStatus);
   }

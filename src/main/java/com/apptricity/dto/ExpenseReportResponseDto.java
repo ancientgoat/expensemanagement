@@ -2,25 +2,19 @@ package com.apptricity.dto;
 
 import com.apptricity.entity.ExpenseReport;
 import com.apptricity.entity.Merchant;
-import com.apptricity.util.ErrorMessage;
+import com.apptricity.util.Messages;
 
 /**
  *
  */
 public class ExpenseReportResponseDto {
 
-//  private String merchantName;
-//  private BigDecimal amount;
-//  private Date createdDate;
-//  private String comment;
-//  private List<String> comments = new ArrayList<String>();
-
   private final Merchant merchant;
   private final ExpenseReport expenseReport;
-  private final ErrorMessage errorMessage;
+  private final Messages messages;
 
   public ExpenseReportResponseDto(final Builder builder) {
-    this.errorMessage = builder.errorMessage;
+    this.messages = builder.messages;
     this.merchant = builder.merchant;
     this.expenseReport = builder.expenseReport;
   }
@@ -33,12 +27,12 @@ public class ExpenseReportResponseDto {
     return this.expenseReport;
   }
 
-  public boolean hasErrors() {
-    return null != this.errorMessage && this.errorMessage.haveErrors();
+  public boolean hasMessage() {
+    return null != this.messages && this.messages.hasMessage();
   }
 
-  public ErrorMessage getErrorMessage() {
-    return this.errorMessage;
+  public Messages getMessages() {
+    return this.messages;
   }
 
   /**
@@ -48,16 +42,26 @@ public class ExpenseReportResponseDto {
 
     private Merchant merchant;
     private ExpenseReport expenseReport;
-    private ErrorMessage.Builder errorMessageBuilder = new ErrorMessage.Builder();
-    private ErrorMessage errorMessage;
+    private Messages messages;
+    private Messages.Builder messagesBuilder = new Messages.Builder();
 
-    public Builder addErrorMessage(final String inErrorMessage) {
-      this.errorMessageBuilder.addError(inErrorMessage);
+    public Builder addMessages(final Messages inMessages) {
+      messagesBuilder.addMessages(inMessages);
       return this;
     }
 
-    public Builder setErrorMessage(final ErrorMessage inErrorMessage) {
-      this.errorMessage = inErrorMessage;
+    public Builder addInfo(final String inErrorMessage) {
+      this.messagesBuilder.addInfo(inErrorMessage);
+      return this;
+    }
+
+    public Builder addWarn(final String inErrorMessage) {
+      this.messagesBuilder.addWarn(inErrorMessage);
+      return this;
+    }
+
+    public Builder addError(final String inErrorMessage) {
+      this.messagesBuilder.addError(inErrorMessage);
       return this;
     }
 
@@ -72,7 +76,7 @@ public class ExpenseReportResponseDto {
     }
 
     public ExpenseReportResponseDto build() {
-      this.errorMessage = errorMessageBuilder.build();
+      this.messages = messagesBuilder.build();
       return new ExpenseReportResponseDto(this);
     }
   }
