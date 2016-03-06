@@ -1,7 +1,6 @@
 package com.apptricity.dto;
 
 import com.apptricity.entity.ExpenseReport;
-import com.apptricity.entity.Merchant;
 import com.apptricity.util.Messages;
 
 /**
@@ -9,18 +8,12 @@ import com.apptricity.util.Messages;
  */
 public class ExpenseReportResponseDto {
 
-  private final Merchant merchant;
   private final ExpenseReport expenseReport;
   private final Messages messages;
 
   public ExpenseReportResponseDto(final Builder builder) {
     this.messages = builder.messages;
-    this.merchant = builder.merchant;
     this.expenseReport = builder.expenseReport;
-  }
-
-  public Merchant getMerchant() {
-    return this.merchant;
   }
 
   public ExpenseReport getExpenseReport() {
@@ -35,12 +28,15 @@ public class ExpenseReportResponseDto {
     return this.messages;
   }
 
+  public boolean hasWarningOrErrors(){
+    return this.messages.hasWarningOrError();
+  }
+
   /**
    *
    */
   public static class Builder {
 
-    private Merchant merchant;
     private ExpenseReport expenseReport;
     private Messages messages;
     private Messages.Builder messagesBuilder = new Messages.Builder();
@@ -67,11 +63,6 @@ public class ExpenseReportResponseDto {
 
     public Builder setExpenseReport(final ExpenseReport inExpenseReport) {
       this.expenseReport = inExpenseReport;
-      return this;
-    }
-
-    public Builder setMerchant(final Merchant inMerchant) {
-      this.merchant = inMerchant;
       return this;
     }
 

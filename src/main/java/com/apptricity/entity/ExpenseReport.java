@@ -41,6 +41,7 @@ public class ExpenseReport {
     return amount;
   }
 
+  @JsonSerialize(using = CustomDateSerializer.class)
   public Date getCreatedDate() {
     return createdDate;
   }
@@ -83,8 +84,9 @@ public class ExpenseReport {
     return this;
   }
 
-  public void setMerchant(Merchant merchant) {
+  public ExpenseReport setMerchant(Merchant merchant) {
     this.merchant = merchant;
+    return this;
   }
 
   public boolean updateExpenseDateTime(final Date inExpenseDateTime) {

@@ -7,8 +7,6 @@ import com.apptricity.entity.Merchant;
 import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.repo.ExpenseReportRepo;
 import com.apptricity.repo.MerchantRepo;
-import com.apptricity.util.Messages;
-import com.apptricity.util.UpdateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,15 +35,12 @@ public class ExpenseReportService {
    *
    */
   public ExpenseReport findOne(final String inId) {
-
     ExpenseReport expenseReport = expenseReportRepo.findOne(inId);
-
     return expenseReport;
   }
 
   /**
-   * @param createDto
-   * @return
+   *
    */
   public ExpenseReportResponseDto createFromDto(final ExpenseReportCreateDto createDto) {
 
@@ -53,15 +48,12 @@ public class ExpenseReportService {
 
     try {
       if (!createDto.hasMessage()) {
-        final Merchant merchant = merchantRepo.save(createDto.getMerchant());
+        // final Merchant merchant = merchantRepo.save(createDto.getMerchant());
         ExpenseReport expenseReport = createDto.getExpenseReport();
-        expenseReport.setMerchant(merchant);
-        responseDtoBuilder
-            .setMerchant(merchant)
-            .setExpenseReport(expenseReportRepo.save(expenseReport))
-        ;
+        // expenseReport.setMerchant(merchant);
+        responseDtoBuilder.setExpenseReport(expenseReportRepo.save(expenseReport));
       } else {
-        // has errors
+        // Has errors
         responseDtoBuilder.addMessages(createDto.getMessages());
       }
     } catch (Exception e) {
@@ -76,39 +68,80 @@ public class ExpenseReportService {
   public ExpenseReportResponseDto updateFromDto(final String inId, final ExpenseReportCreateDto createDto) {
 
     final ExpenseReportResponseDto.Builder responseDtoBuilder = new ExpenseReportResponseDto.Builder();
-    final ExpenseReport expenseReport = this.expenseReportRepo.findOne(inId);
 
-    if (null == expenseReport) {
-      responseDtoBuilder.addError(String.format("No such ExpenseReport with id '%s'", inId));
-    } else {
-      if (ExpenseReportStatus.NEW == expenseReport.getStatus()) {
-        // ExpenseReport is NOT NEW - update not allowed.
-        responseDtoBuilder.addWarn("Can not update a REDEEMED ExpenseReport.");
+    try {
+      final ExpenseReport expenseReport = this.expenseReportRepo.findOne(inId);
+
+      if (null == expenseReport) {
+        responseDtoBuilder.addError(String.format("No such ExpenseReport with id '%s'", inId));
       } else {
-        final ExpenseReport dtoExpenseRpt = createDto.getExpenseReport();
-
-        boolean changed =
-            expenseReport.updateAmount(dtoExpenseRpt.getAmount())
-                || expenseReport.updateExpenseDateTime(dtoExpenseRpt.getExpenseDateTime());
-
-        final ExpenseReportStatus status = dtoExpenseRpt.getStatus();
-        if (null != status && status == ExpenseReportStatus.REIMBURSED) {
-          changed = expenseReport.updateStatus(dtoExpenseRpt.getStatus()) || changed;
-        }
-
-        // Save some time - if nothing changed.
-        ExpenseReport savedExpenseReport = null;
-        if (changed) {
-          savedExpenseReport = this.expenseReportRepo.save(expenseReport);
+        if (ExpenseReportStatus.REIMBURSED == expenseReport.getStatus()) {
+          // ExpenseReport is NOT NEW - update not allowed.
+          responseDtoBuilder.addWarn("Can not update a REIMBURSED ExpenseReport.");
         } else {
-          responseDtoBuilder.addInfo(
-              String.format("No changes for ExpenseReport id '%s', nothing saved.", inId));
-          savedExpenseReport = expenseReport;
-        }
-        responseDtoBuilder.setExpenseReport(savedExpenseReport);
-      }
-    }
+          final ExpenseReport dtoExpenseRpt = createDto.getExpenseReport();
 
+          // Update ExpenseReport
+          boolean changed =
+              expenseReport.updateAmount(dtoExpenseRpt.getAmount())
+                  || expenseReport.updateExpenseDateTime(dtoExpenseRpt.getExpenseDateTime());
+
+          final ExpenseReportStatus status = createDto.getExpenseReport().getStatus();
+          if (null != status && status == ExpenseReportStatus.REIMBURSED) {
+            changed = expenseReport.updateStatus(status) || changed;
+          }
+
+          // Update Merchant
+          if (createDto.haveMerchantName()) {
+            Merchant merchant = expenseReport.getMerchant();
+            if (null == merchant) {
+              merchant = new Merchant();
+            }
+            changed = merchant.updateName(createDto.getMerchantName()) || changed;
+            expenseReport.setMerchant(merchant);
+          }
+
+          // Save some time - if nothing changed.
+          ExpenseReport savedExpenseReport = null;
+          if (changed) {
+            savedExpenseReport = this.expenseReportRepo.save(expenseReport);
+          } else {
+            responseDtoBuilder.addInfo(
+                String.format("No changes were input for ExpenseReport id '%s', so nothing saved.", inId));
+            savedExpenseReport = expenseReport;
+          }
+          responseDtoBuilder.setExpenseReport(savedExpenseReport);
+        }
+      }
+    } catch (Exception e) {
+      responseDtoBuilder.addWarn(String.format("Error with ExpenseReport : '%s' : %s", inId, e.toString()));
+    }
+    return responseDtoBuilder.build();
+  }
+
+  /**
+   *
+   */
+  public ExpenseReportResponseDto delete(final String inId) {
+
+    final ExpenseReportResponseDto.Builder responseDtoBuilder = new ExpenseReportResponseDto.Builder();
+
+    try {
+      final ExpenseReport expenseReport = this.expenseReportRepo.findOne(inId);
+
+      if (null == expenseReport) {
+        responseDtoBuilder.addError(String.format("No such ExpenseReport with id '%s'", inId));
+      } else {
+        if (ExpenseReportStatus.REIMBURSED == expenseReport.getStatus()) {
+          // ExpenseReport is NOT NEW - update not allowed.
+          responseDtoBuilder.addWarn("Can not delete a REIMBURSED ExpenseReport.");
+        } else {
+          this.expenseReportRepo.delete(inId);
+        }
+      }
+    } catch (Exception e) {
+      responseDtoBuilder.addWarn(String.format("Error with ExpenseReport : '%s' : %s", inId, e.toString()));
+    }
     return responseDtoBuilder.build();
   }
 }

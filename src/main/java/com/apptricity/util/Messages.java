@@ -1,5 +1,7 @@
 package com.apptricity.util;
 
+import com.apptricity.enums.ExpenseReportStatus;
+import com.apptricity.service.ExpenseReportService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -38,6 +40,21 @@ public class Messages {
   public boolean hasMessage() {
     return 0 < this.messages.size();
   }
+
+  public boolean hasWarning(){
+    final Integer count = countMap.get(MessageType.WARN);
+    return null != count && 0 < count;
+  }
+
+  public boolean hasError(){
+    final Integer count = countMap.get(MessageType.ERROR);
+    return null != count && 0 < count;
+  }
+
+  public boolean hasWarningOrError(){
+    return this.hasWarning() || this.hasError();
+  }
+
 
   /**
    *

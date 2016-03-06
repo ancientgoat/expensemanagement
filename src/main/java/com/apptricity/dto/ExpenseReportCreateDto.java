@@ -13,23 +13,45 @@ import java.util.Date;
  */
 public class ExpenseReportCreateDto {
 
-  private final Merchant merchant;
   private final ExpenseReport expenseReport;
   private final Messages messages;
 
   public ExpenseReportCreateDto(final Builder builder) {
     this.messages = builder.messages;
-    this.merchant = new Merchant().setName(builder.merchantName);
+    Merchant merchant;
+    if (null != builder.merchantName) {
+      merchant = new Merchant().setName(builder.merchantName);
+    } else {
+      merchant = null;
+    }
     this.expenseReport =
         new ExpenseReport()
             .setAmount(builder.amount)
             .addComment(builder.comment)
             .setExpenseDateTime(builder.expenseDateTime)
+            .setStatus(builder.status)
+            .setMerchant(merchant)
     ;
   }
 
-  public Merchant getMerchant() {
-    return this.merchant;
+  public boolean haveMerchantName() {
+    boolean haveName = false;
+    if (null != this.expenseReport) {
+      Merchant merchant = this.expenseReport.getMerchant();
+      if(null != merchant){
+        if(null != merchant.getName()){
+          haveName = true;
+        }
+      }
+    }
+    return haveName;
+  }
+
+  public String getMerchantName() {
+    if (haveMerchantName()) {
+      return this.expenseReport.getMerchant().getName();
+    }
+    return null;
   }
 
   public ExpenseReport getExpenseReport() {
@@ -40,7 +62,7 @@ public class ExpenseReportCreateDto {
     return this.messages.hasMessage();
   }
 
-  public Messages getMessages(){
+  public Messages getMessages() {
     return this.messages;
   }
 
@@ -57,7 +79,6 @@ public class ExpenseReportCreateDto {
     private Messages.Builder messagesBuilder = new Messages.Builder();
 
     public void setStatus(ExpenseReportStatus status) {
-
       this.status = status;
     }
 
