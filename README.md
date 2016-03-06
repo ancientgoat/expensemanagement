@@ -6,8 +6,20 @@ Seems to work just fine.
 
 
 
+Extra Credit 
+--------------
+* I implemented dynamic queries by using 'querydsl'.  Querydsl auto generates a few classes
+    corresponding to each Entity.  And allows, if setup in the controller properly, a dynamic 
+    query filter.
+  * Examples:            
+    * http://localhost:8080/expenses?status=REIMBURSED
+    * http://localhost:8080/expenses?merchant.name=xyx
+
+
 Features 
 --------------
+
+
 * Each repository has 'exported = false'
   * This allows a Controller to still use the MongoRepository bulit in features.
   * However, it doesn't expose the build in REST calls to the outside world.
