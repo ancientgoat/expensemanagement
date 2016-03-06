@@ -7,6 +7,7 @@ import com.apptricity.entity.Merchant;
 import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.repo.ExpenseReportRepo;
 import com.apptricity.repo.MerchantRepo;
+import com.mysema.query.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +35,15 @@ public class ExpenseReportService {
   /**
    *
    */
+  public Page<ExpenseReport> findAll(final Predicate predicate, final Pageable pageable) {
+    return expenseReportRepo.findAll(predicate, pageable);
+  }
+
+  /**
+   *
+   */
   public ExpenseReport findOne(final String inId) {
-    expenseReportRepo.findBy
+    //expenseReportRepo.findBy
     ExpenseReport expenseReport = expenseReportRepo.findOne(inId);
     return expenseReport;
 

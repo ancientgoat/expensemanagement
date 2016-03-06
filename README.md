@@ -16,3 +16,8 @@ Features
 * Update shows 'No Changes' if there were no changes with an INFO message.
 * Update does not write to the database if there were no changes, for speed.
 
+
+* Dynamic queries (querydsl)
+  * http://localhost:8080/expenses?merchant.name=xyx
+
+* 
