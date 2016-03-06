@@ -52,9 +52,63 @@ dependencies {
     compile group: "org.springframework.boot", name: "spring-boot-starter-data-mongodb", version: "1.3.2.RELEASE"
     compile group: 'javax.persistence', name: 'persistence-api', version: '1.0'
 
+    //compile group: 'com.querydsl', name: 'querydsl-mongodb', version: '4.0.8'
+
+    compile group: 'com.mysema.querydsl', name: 'querydsl-mongodb', version: '3.7.2'
+    compile group: 'com.mysema.querydsl', name: 'querydsl-core', version: '3.7.2'
+    compile group: 'com.mysema.querydsl', name: 'querydsl-apt', version: '3.7.2'
+
+    // compile group: 'com.querydsl', name: 'querydsl-jpa', version: '3.7.2'
+    querydslapt group: 'com.mysema.querydsl', name: 'querydsl-apt', version: '3.7.2'
+
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
+//compileJava {
+//    doFirst {
+//        Map otherArgs = [
+//                includeAntRuntime: false,
+//                destdir: destinationDir,
+//                classpath: configurations.compile.asPath,
+//                sourcepath: '',
+//                target: targetCompatibility,
+//                source: sourceCompatibility
+//        ]
+//        options.compilerArgs = [
+//                '-processor', 'com.mysema.query.apt.jpa.JPAAnnotationProcessor',
+//                '-s', "${destinationDir.absolutePath}".toString()
+//        ]
+//        Map antOptions = otherArgs + options.optionMap()
+//        ant.javac(antOptions) {
+//            source.addToAntBuilder(ant, 'src', FileCollection.AntType.MatchingTask)
+//            options.compilerArgs.each {value ->
+//                compilerarg(value: value)
+//            }
+//        }
+//    }
+//}
+
+sourceSets {
+    generated
+}
+
+sourceSets.generated.java.srcDirs = ['src/main/generated']
+
+configurations {
+    querydslapt
+}
+
+
+task generateQueryDSL(type: Compile, group: 'build', description: 'Generates the QueryDSL query types') {
+    source = sourceSets.main.java
+    classpath = configurations.compile + configurations.querydslapt
+    options.compilerArgs = [
+            "-proc:only",
+            "-processor", "com.mysema.query.apt.jpa.JPAAnnotationProcessor"
+    ]
+    destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
+}
+compileJava.dependsOn generateQueryDSL
 
 //
 // We use the Gradle Wrapper

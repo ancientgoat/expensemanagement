@@ -35,8 +35,10 @@ public class ExpenseReportService {
    *
    */
   public ExpenseReport findOne(final String inId) {
+    expenseReportRepo.findBy
     ExpenseReport expenseReport = expenseReportRepo.findOne(inId);
     return expenseReport;
+
   }
 
   /**
