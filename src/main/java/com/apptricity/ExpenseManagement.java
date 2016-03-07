@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ExpenseManagement {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(ExpenseManagement.class, args);
-
 	}
 }

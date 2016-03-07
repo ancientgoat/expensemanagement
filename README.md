@@ -34,3 +34,16 @@ are open to anyone, but the same URLs with the prefix /auth/ will need demo/demo
 * Messages have three types ERROR, WARN, INFO
 * Update shows 'No Changes' if there were no changes with an INFO message.
 * Update does not write to the database if there were no changes, for speed.
+* I implemented a 'Generic' class 'UpdateHelper' to show a bit of code reuse.
+* I tend to use the builder pattern a lot.
+
+### Examples:
+
+#### Insert
+
+>{
+>     "amount": 100.01
+>    , "expenseDateTime": "2016-02-01T01:02:03.000Z"
+>    , "comment" : "comment_001"
+>    , "merchant": { "name" : "Pete" }
+>}

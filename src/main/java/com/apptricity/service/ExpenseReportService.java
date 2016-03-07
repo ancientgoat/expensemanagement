@@ -58,9 +58,9 @@ public class ExpenseReportService {
 
     try {
       if (!createDto.hasMessage()) {
-        // final Merchant merchant = merchantRepo.save(createDto.getMerchant());
+        final Merchant merchant = merchantRepo.save(createDto.getMerchant());
         ExpenseReport expenseReport = createDto.getExpenseReport();
-        // expenseReport.setMerchant(merchant);
+        expenseReport.setMerchant(merchant);
         responseDtoBuilder.setExpenseReport(expenseReportRepo.save(expenseReport));
       } else {
         // Has errors
@@ -99,6 +99,12 @@ public class ExpenseReportService {
           final ExpenseReportStatus status = createDto.getExpenseReport().getStatus();
           if (null != status && status == ExpenseReportStatus.REIMBURSED) {
             changed = expenseReport.updateStatus(status) || changed;
+          }
+
+          String firstComment = createDto.getFirstComment();
+          if (null != firstComment && 0 < firstComment.length()) {
+            changed = true;
+            expenseReport.addComment(firstComment);
           }
 
           // Update Merchant

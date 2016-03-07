@@ -19,6 +19,7 @@ public class Messages {
   private Messages(final Builder builder) {
     this.messages = Lists.newArrayList(builder.messages);
 
+    // Count messages per MessageType
     for (final Message msg : this.messages) {
       Integer count = countMap.get(msg.getMessageType());
       if (null == count) {

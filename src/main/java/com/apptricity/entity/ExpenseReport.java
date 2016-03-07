@@ -50,6 +50,13 @@ public class ExpenseReport {
     return Lists.newArrayList(comments);
   }
 
+  public String getFirstComment() {
+    if (0 < this.comments.size()) {
+      return this.comments.get(0);
+    }
+    return null;
+  }
+
   public ExpenseReportStatus getStatus() {
     return status;
   }

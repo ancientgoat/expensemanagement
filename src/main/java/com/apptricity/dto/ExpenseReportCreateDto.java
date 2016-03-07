@@ -6,6 +6,7 @@ import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.util.Messages;
 
 import java.math.BigDecimal;
+import java.time.chrono.MinguoEra;
 import java.util.Date;
 
 /**
@@ -18,19 +19,13 @@ public class ExpenseReportCreateDto {
 
   public ExpenseReportCreateDto(final Builder builder) {
     this.messages = builder.messages;
-    Merchant merchant;
-    if (null != builder.merchantName) {
-      merchant = new Merchant().setName(builder.merchantName);
-    } else {
-      merchant = null;
-    }
     this.expenseReport =
         new ExpenseReport()
             .setAmount(builder.amount)
             .addComment(builder.comment)
             .setExpenseDateTime(builder.expenseDateTime)
             .setStatus(builder.status)
-            .setMerchant(merchant)
+            .setMerchant(builder.merchant)
     ;
   }
 
@@ -38,8 +33,8 @@ public class ExpenseReportCreateDto {
     boolean haveName = false;
     if (null != this.expenseReport) {
       Merchant merchant = this.expenseReport.getMerchant();
-      if(null != merchant){
-        if(null != merchant.getName()){
+      if (null != merchant) {
+        if (null != merchant.getName()) {
           haveName = true;
         }
       }
@@ -66,20 +61,36 @@ public class ExpenseReportCreateDto {
     return this.messages;
   }
 
+  public String getFirstComment() {
+    return this.expenseReport.getFirstComment();
+  }
+
+  public Merchant getMerchant() {
+    if (null != this.expenseReport) {
+      return this.expenseReport.getMerchant();
+    }
+    return null;
+  }
+
   /**
    *
    */
   public static class Builder {
-    private String merchantName;
     private BigDecimal amount;
     private Date expenseDateTime;
     private String comment;
     private ExpenseReportStatus status = ExpenseReportStatus.NEW;
     private Messages messages;
     private Messages.Builder messagesBuilder = new Messages.Builder();
+    private Merchant merchant = new Merchant();
 
     public void setStatus(ExpenseReportStatus status) {
       this.status = status;
+    }
+
+    public Builder setComment(final String inComment) {
+      this.comment = inComment;
+      return this;
     }
 
     public Builder setAmount(BigDecimal amount) {
@@ -87,13 +98,13 @@ public class ExpenseReportCreateDto {
       return this;
     }
 
-    public Builder setExpenseDateTime(Date expenseDateTime) {
+    public Builder setExpenseDateTime(final Date expenseDateTime) {
       this.expenseDateTime = expenseDateTime;
       return this;
     }
 
-    public Builder setMerchantName(String merchantName) {
-      this.merchantName = merchantName;
+    public Builder setMerchant(final Merchant inMerchant) {
+      this.merchant = inMerchant;
       return this;
     }
 
@@ -101,8 +112,8 @@ public class ExpenseReportCreateDto {
       if (null == this.amount) {
         this.messagesBuilder.addError("'amount' is required, please add and try again.");
       }
-      if (null == this.merchantName) {
-        this.messagesBuilder.addError("'merchantName' is required, please add and try again.");
+      if (null == this.merchant || null == this.merchant.getName() || 0 == this.merchant.getName().length()) {
+        this.messagesBuilder.addError("'merchant.name' must have a size, I know nothing, I see nothing, I KNOW NOTHING.");
       }
       if (null == this.expenseDateTime) {
         this.messagesBuilder.addError("'expenseDateTime' is required, please add and try again.");
