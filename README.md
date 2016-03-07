@@ -41,9 +41,11 @@ are open to anyone, but the same URLs with the prefix /auth/ will need demo/demo
 
 #### Insert
 
->{
->     "amount": 100.01
->    , "expenseDateTime": "2016-02-01T01:02:03.000Z"
->    , "comment" : "comment_001"
->    , "merchant": { "name" : "Pete" }
->}
+```
+{
+     "amount": 100.01
+    , "expenseDateTime": "2016-02-01T01:02:03.000Z"
+    , "comment" : "comment_001"
+    , "merchant": { "name" : "Pete" }
+}
+```
