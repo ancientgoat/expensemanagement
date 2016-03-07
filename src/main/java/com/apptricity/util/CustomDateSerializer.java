@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
+ * Used to serialize a Date to be human readable when marshalled to JSON.
  */
 public class CustomDateSerializer extends JsonSerializer<Date> {
   @Override

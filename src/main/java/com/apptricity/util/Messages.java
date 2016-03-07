@@ -1,7 +1,5 @@
 package com.apptricity.util;
 
-import com.apptricity.enums.ExpenseReportStatus;
-import com.apptricity.service.ExpenseReportService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -9,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Allow more than one message of varying types.
  */
 public class Messages {
 
@@ -56,7 +54,6 @@ public class Messages {
     return this.hasWarning() || this.hasError();
   }
 
-
   /**
    *
    */
@@ -91,6 +88,5 @@ public class Messages {
     public Messages build() {
       return new Messages(this);
     }
-
   }
 }

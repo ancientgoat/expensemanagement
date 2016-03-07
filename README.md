@@ -46,7 +46,7 @@ POST
 http://localhost:8080/expense
 {
      "amount": 100.01
-    , "expenseDateTime": "2016-02-01T01:02:03.000Z"
+    , "expenseDateTime": "2016-02-01T01:02:03-0700"
     , "comment" : "comment_001"
     , "merchant": { "name" : "Pete" }
 }

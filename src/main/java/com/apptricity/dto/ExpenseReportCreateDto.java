@@ -9,15 +9,26 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * A Data Transfer Object that is created by input JSON during an HTTP call.
- * Used in the Controllers.
+ * A Data Transfer Object that is created by input JSON during the acceptance of a HTTP call in a Controller.
  */
 public class ExpenseReportCreateDto {
 
+  /**
+   * ExpenseReport entity
+   */
   private final ExpenseReport expenseReport;
+
+  /**
+   * Messages come in three type ERROR, WANN, INFO
+   */
   private final Messages messages;
 
-  public ExpenseReportCreateDto(final Builder builder) {
+  /**
+   * Set the basic information for a ExpenseReport from the input from a Controller.
+   *
+   * @param builder Follows the builder pattern.
+   */
+  private ExpenseReportCreateDto(final Builder builder) {
     this.messages = builder.messages;
     this.expenseReport =
         new ExpenseReport()
@@ -29,6 +40,9 @@ public class ExpenseReportCreateDto {
     ;
   }
 
+  /**
+   * @return boolean True if a Merchant name was input from the controller.
+   */
   public boolean haveMerchantName() {
     boolean haveName = false;
     if (null != this.expenseReport) {
@@ -42,6 +56,9 @@ public class ExpenseReportCreateDto {
     return haveName;
   }
 
+  /**
+   * @return String Return the Merchant name, or null if none.
+   */
   public String getMerchantName() {
     if (haveMerchantName()) {
       return this.expenseReport.getMerchant().getName();
@@ -49,22 +66,37 @@ public class ExpenseReportCreateDto {
     return null;
   }
 
+  /**
+   * @return ExpenseReport Return the ExpenseReport
+   */
   public ExpenseReport getExpenseReport() {
     return this.expenseReport;
   }
 
+  /**
+   * @return boolean Return true if there are any associated Messages.
+   */
   public boolean hasMessage() {
     return this.messages.hasMessage();
   }
 
+  /**
+   * @return Messages
+   */
   public Messages getMessages() {
     return this.messages;
   }
 
+  /**
+   * @return String Helper method to return the first comment, if any.
+   */
   public String getFirstComment() {
     return this.expenseReport.getFirstComment();
   }
 
+  /**
+   * @return Merchant Return the Merchant associated with the ExpenseReport.
+   */
   public Merchant getMerchant() {
     if (null != this.expenseReport) {
       return this.expenseReport.getMerchant();
@@ -73,9 +105,11 @@ public class ExpenseReportCreateDto {
   }
 
   /**
-   *
+   * The builder pattern.  This class is built internally when a controller receives HTTP JSoN content
+   *    in the forms of a ExpenseReport.
    */
   public static class Builder {
+
     private BigDecimal amount;
     private Date expenseDateTime;
     private String comment;
@@ -108,6 +142,9 @@ public class ExpenseReportCreateDto {
       return this;
     }
 
+    /**
+     * Validate input for an (Create) Insert into the database
+     */
     private void validateForInsert() {
       if (null == this.amount) {
         this.messagesBuilder.addError("'amount' is required, please add and try again.");
@@ -120,19 +157,33 @@ public class ExpenseReportCreateDto {
       }
     }
 
+    /**
+     * No validation for an Update into the database, at this stage.
+     */
     private void validateForUpdate() {
     }
 
+    /**
+     * @return ExpenseReportCreateDto Build the DTO after checking for rules for inserting.
+     */
     public ExpenseReportCreateDto buildForUpdate() {
       validateForUpdate();
       return _build();
     }
 
+    /**
+     * @return ExpenseReportCreateDto Build the DTO after checking for rules for updating.
+     */
     public ExpenseReportCreateDto buildForInsert() {
       validateForInsert();
       return _build();
     }
 
+    /**
+     * I have a saying, if you do it twice - do it once.
+     *
+     * @return ExpenseReportCreateDto
+     */
     private ExpenseReportCreateDto _build() {
       this.messages = messagesBuilder.build();
       return new ExpenseReportCreateDto(this);

@@ -1,7 +1,7 @@
 package com.apptricity.util;
 
 /**
- *
+ * A simple class containing a Message string and a message type.
  */
 public class Message {
   private final String content;

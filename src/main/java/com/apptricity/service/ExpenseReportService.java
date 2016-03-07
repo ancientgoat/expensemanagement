@@ -7,40 +7,53 @@ import com.apptricity.entity.Merchant;
 import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.repo.ExpenseReportRepo;
 import com.apptricity.repo.MerchantRepo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mysema.query.types.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Service/Business layer between the Controller and the Repositories.
  */
 @Service
 public class ExpenseReportService {
 
-  @Autowired
-  private MerchantRepo merchantRepo;
+  @JsonIgnore
+  public static final Logger log = LoggerFactory.getLogger(ExpenseReportService.class);
 
-  @Autowired
+  private MerchantRepo merchantRepo;
   private ExpenseReportRepo expenseReportRepo;
 
+  @Autowired
+  public ExpenseReportService(final MerchantRepo inMerchantRepo, final ExpenseReportRepo inExpenseReportRepo) {
+    this.merchantRepo = inMerchantRepo;
+    this.expenseReportRepo = inExpenseReportRepo;
+  }
+
   /**
-   *
+   * @param pageable
+   * @return
    */
   public Page<ExpenseReport> findAll(final Pageable pageable) {
     return expenseReportRepo.findAll(pageable);
   }
 
   /**
-   *
+   * @param predicate
+   * @param pageable
+   * @return
    */
   public Page<ExpenseReport> findAll(final Predicate predicate, final Pageable pageable) {
     return expenseReportRepo.findAll(predicate, pageable);
   }
 
   /**
-   *
+   * @param inId
+   * @return
    */
   public ExpenseReport findOne(final String inId) {
     //expenseReportRepo.findBy
@@ -50,7 +63,8 @@ public class ExpenseReportService {
   }
 
   /**
-   *
+   * @param createDto
+   * @return
    */
   public ExpenseReportResponseDto createFromDto(final ExpenseReportCreateDto createDto) {
 
@@ -73,7 +87,9 @@ public class ExpenseReportService {
   }
 
   /**
-   *
+   * @param inId
+   * @param createDto
+   * @return
    */
   public ExpenseReportResponseDto updateFromDto(final String inId, final ExpenseReportCreateDto createDto) {
 
@@ -136,7 +152,8 @@ public class ExpenseReportService {
   }
 
   /**
-   *
+   * @param inId
+   * @return
    */
   public ExpenseReportResponseDto delete(final String inId) {
 
@@ -152,8 +169,22 @@ public class ExpenseReportService {
           // ExpenseReport is NOT NEW - update not allowed.
           responseDtoBuilder.addWarn("Can not delete a REIMBURSED ExpenseReport.");
         } else {
+          final Merchant merchant = expenseReport.getMerchant();
+          if (null != merchant) {
+            final String msg = String.format("Deleted Merchant '%s'", merchant.getId());
+            this.merchantRepo.delete(merchant.getId());
+            if (log.isInfoEnabled()) {
+              log.info(msg);
+            }
+            responseDtoBuilder.addInfo(msg);
+          }
+
+          final String msg = String.format("Deleted ExpenseReport '%s'", inId);
           this.expenseReportRepo.delete(inId);
-          responseDtoBuilder.addInfo(String.format("Deleted expenseReport with id : '%s'", inId));
+          if (log.isInfoEnabled()) {
+            log.info(msg);
+          }
+          responseDtoBuilder.addInfo(msg);
         }
       }
     } catch (Exception e) {
