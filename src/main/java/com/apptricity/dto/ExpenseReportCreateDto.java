@@ -6,11 +6,11 @@ import com.apptricity.enums.ExpenseReportStatus;
 import com.apptricity.util.Messages;
 
 import java.math.BigDecimal;
-import java.time.chrono.MinguoEra;
 import java.util.Date;
 
 /**
- *
+ * A Data Transfer Object that is created by input JSON during an HTTP call.
+ * Used in the Controllers.
  */
 public class ExpenseReportCreateDto {
 
