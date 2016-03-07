@@ -153,6 +153,7 @@ public class ExpenseReportService {
           responseDtoBuilder.addWarn("Can not delete a REIMBURSED ExpenseReport.");
         } else {
           this.expenseReportRepo.delete(inId);
+          responseDtoBuilder.addInfo(String.format("Deleted expenseReport with id : '%s'", inId));
         }
       }
     } catch (Exception e) {

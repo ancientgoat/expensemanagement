@@ -42,10 +42,29 @@ are open to anyone, but the same URLs with the prefix /auth/ will need demo/demo
 #### Insert
 
 ```
+POST
+http://localhost:8080/expense
 {
      "amount": 100.01
     , "expenseDateTime": "2016-02-01T01:02:03.000Z"
     , "comment" : "comment_001"
     , "merchant": { "name" : "Pete" }
 }
+```
+
+#### Update
+
+```
+PUT
+http://localhost:8080/expense/56dcd0f47d4c0450c2342448
+{
+    "comment" : "comment_002"
+    , "merchant" : { "name" : "Frank" }
+}
+```
+#### Delete
+
+```
+DELETE
+http://localhost:8080/expense/56dcd0f47d4c0450c2342448
 ```
